@@ -1,2 +1,1 @@
-pythonAlgorithmLib
-==================
+This project consists of a set of algorithm implementations written in Python.
