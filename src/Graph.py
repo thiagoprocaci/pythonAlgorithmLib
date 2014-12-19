@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 
-#import Queue
 
 class GraphSupport:
     #useful class for basic graph constructions
@@ -126,9 +126,9 @@ class BreadthFirstSearch:
     def findAllPath(graph, originNode, goalNode):
         visitedList = []
         visitedList.append(originNode.id)
-        nodeReturnList = []
+        nodeReturnList = []        
         BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList)  
-        #node object with paths 
+        
         return nodeReturnList
         
 

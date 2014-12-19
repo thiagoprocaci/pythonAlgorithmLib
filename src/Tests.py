@@ -153,7 +153,7 @@ class TestCaseApp(unittest.TestCase):
         goalNode = graph.nodeDict['F']
         
         pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
-        print pathList
+        self.assertEquals(4, len(pathList))
         
 
 
