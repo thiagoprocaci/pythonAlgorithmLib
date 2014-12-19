@@ -1,5 +1,5 @@
 
-import Queue
+#import Queue
 
 class GraphSupport:
     #useful class for basic graph constructions
@@ -79,6 +79,7 @@ class DepthFirstSearch:
 
     # busca em profundidade
     # retorna lista com o caminho
+    # o grafo nao pode ter ciclos
     @staticmethod
     def findPath(graph, originNode, goalNode):
         graph.clearNodeStatus()
@@ -111,37 +112,44 @@ class DepthFirstSearch:
                     break
             path.reverse()
             return path
-        return None
+        return None    
+
+
+class BreadthFirstSearch:
+
+    def __init__(self):
+        pass
+
+    # returns all path between two nodes
+    # accept cycles
+    @staticmethod
+    def findAllPath(graph, originNode, goalNode):
+        visitedList = []
+        visitedList.append(originNode.id)
+        nodeReturnList = []
+        BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList)  
+        #node object with paths 
+        return nodeReturnList
+        
 
     @staticmethod
-    def findAllPaths(graph, originNode, goalNode):
-        graph.clearNodeStatus()        
-        parentMap = {}        
-        pathList = []
-        q = Queue.Queue()
-        q.put(originNode)
-        while not q.empty():
-            n = q.get()
-            if n.status != 'discovered':                
-                n.status = 'discovered'                  
-                for nodeKey in graph.getAdjacentNodes(n):
-                    child = graph.nodeDict[nodeKey]                                                            
-                    q.put(child)                    
-                    parentMap[child.id] = n.id                    
-                    if child.id == goalNode.id:    
-                        q.get()              
-                        n.status = None
-                        path = []
-                        curr = goalNode.id            
-                        while (True):                
-                            path.append(curr)
-                            curr = parentMap.get(curr)
-                            if curr == originNode.id:
-                                path.append(curr)
-                                break
-                        path.reverse()
-                        pathList.append(path)
-                       
-        return pathList
+    def __findAllPath(graph, goalNode, visitedList, nodeReturnList):                    
+        nodeDict = graph.getAdjacentNodes(graph.nodeDict[visitedList[-1]])
+        for nodeKey in nodeDict:
+            if nodeKey in visitedList:
+                continue
+            if nodeKey == goalNode.id:
+                visitedList.append(nodeKey)
+                l = []
+                for idNode in visitedList:
+                    l.append(idNode)
+                nodeReturnList.append(l)                
+                visitedList.pop()
+                break
 
-
+        for nodeKey in nodeDict:
+            if (nodeKey in visitedList) or (nodeKey == goalNode.id):
+                continue
+            visitedList.append(nodeKey)
+            BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList)
+            visitedList.pop()

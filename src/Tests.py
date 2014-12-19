@@ -133,14 +133,14 @@ class TestCaseApp(unittest.TestCase):
         path = DepthFirstSearch.findPath(graph, originNode, Node('H'))
         self.assertTrue(path is None)
 
-    def testDepthFirstSearchFindAllPaths(self):
+    def testBreadthFirstSearchFindAllPaths(self):
         text = 'AB1;AC1;CD1;BD1;CF1;BA1;FC1;BF1;DF1'
+
         graph = GraphSupport.buildGraph(text)
         originNode = graph.nodeDict['A']
         goalNode = graph.nodeDict['F']
         
-        pathList = DepthFirstSearch.findAllPaths(graph, originNode, goalNode)        
-        print pathList
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
 
         self.assertEquals(4, len(pathList))
         expectedPaths = [['A', 'B', 'F'], ['A', 'B', 'D', 'F'], ['A', 'C', 'F'], ['A', 'C', 'D', 'F']]
@@ -152,8 +152,8 @@ class TestCaseApp(unittest.TestCase):
         originNode = graph.nodeDict['A']
         goalNode = graph.nodeDict['F']
         
-        #pathList = DepthFirstSearch.findAllPaths(graph, originNode, goalNode)     
-        #print pathList
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        print pathList
         
 
 
