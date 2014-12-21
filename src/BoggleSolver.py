@@ -12,7 +12,8 @@ def loadMatrix():
     for line in text.split('\n'):            
         row = []
         for mychar in line.split(';'):
-            row.append(mychar)
+            if mychar:
+                row.append(mychar.strip())
         matrix.append(row)
     return matrix
 
@@ -61,6 +62,7 @@ def transformMatrixToGraph(matrix):
 
 
 def main():
+    #not optimized solution
     matrix = loadMatrix()
     print matrix
     print '-----------'
@@ -69,15 +71,44 @@ def main():
     destList = []
     for nodeKey in graph.nodeDict:
         node = graph.nodeDict[nodeKey]
+        #print node.id, node.label
         if node.label == 'h':
             originList.append(node)
         elif node.label == 't':
             destList.append(node)
 
+
+
+    dictPossibleSolution = {}
+    count = 0
     for originNode in originList:
+        print 'Origin:', originNode.id, originNode.label
         for goalNode in destList:
+            print 'Dest:', goalNode.id, goalNode.label
             pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
-            print pathList
+            dictPossibleSolution[count] = pathList
+            count = count + 1
+
+    print 'Printing solution: finding word "heat"'
+    for key in dictPossibleSolution:
+        pathList = dictPossibleSolution[key]        
+        for path in pathList:
+            printSep = False 
+            length = len(path)
+            label1 = graph.nodeDict[path[0]].label
+            label2 = graph.nodeDict[path[1]].label
+            label3 = graph.nodeDict[path[2]].label
+            label4 = graph.nodeDict[path[3]].label
+            if (length == 4) and (label1 == 'h') and (label2 == 'e') and (label3 == 'a') and label4 == 't':
+                printSep = True
+                for nodeId in path:
+                    node = graph.nodeDict[nodeId]
+                    pathString = nodeId + ':' + node.label
+                    print pathString
+                    
+            if printSep:       
+                print '---------------------'
+
 
 
             
