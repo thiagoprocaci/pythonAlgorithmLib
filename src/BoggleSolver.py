@@ -85,14 +85,14 @@ def main():
         print 'Origin:', originNode.id, originNode.label
         for goalNode in destList:
             print 'Dest:', goalNode.id, goalNode.label
-            pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+            pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode, 3)
             dictPossibleSolution[count] = pathList
             count = count + 1
 
     print 'Printing solution: finding word "heat"'
     for key in dictPossibleSolution:
         pathList = dictPossibleSolution[key]        
-        for path in pathList:
+        for path in pathList:            
             printSep = False 
             length = len(path)
             label1 = graph.nodeDict[path[0]].label

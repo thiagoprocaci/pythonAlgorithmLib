@@ -123,17 +123,19 @@ class BreadthFirstSearch:
     # returns all path between two nodes
     # accept cycles
     @staticmethod
-    def findAllPath(graph, originNode, goalNode):
+    def findAllPath(graph, originNode, goalNode, searchMaxLevel = None):
         visitedList = []
         visitedList.append(originNode.id)
         nodeReturnList = []        
-        BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList)  
+        BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList, searchMaxLevel, 0)  
         
         return nodeReturnList
         
 
     @staticmethod
-    def __findAllPath(graph, goalNode, visitedList, nodeReturnList):                    
+    def __findAllPath(graph, goalNode, visitedList, nodeReturnList, searchMaxLevel, currentLevel):        
+        if (searchMaxLevel is not None)  and (searchMaxLevel <= currentLevel):
+            return         
         nodeDict = graph.getAdjacentNodes(graph.nodeDict[visitedList[-1]])
         for nodeKey in nodeDict:
             if nodeKey in visitedList:
@@ -151,5 +153,7 @@ class BreadthFirstSearch:
             if (nodeKey in visitedList) or (nodeKey == goalNode.id):
                 continue
             visitedList.append(nodeKey)
-            BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList)
+            currentLevel = currentLevel + 1
+            BreadthFirstSearch.__findAllPath(graph, goalNode, visitedList, nodeReturnList, searchMaxLevel, currentLevel)
+            currentLevel = currentLevel - 1
             visitedList.pop()
