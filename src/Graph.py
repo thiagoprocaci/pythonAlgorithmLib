@@ -42,6 +42,23 @@ class Graph:
         for key in self.nodeDict:
             self.nodeDict[key].status = None    
 
+    def getEdge(self, source, dest):
+        idEdge = Edge.genId(source, dest)
+        return self.edgeDict.get(idEdge)
+
+    def getPathCost(self, path):
+        if len(path) > 0:
+            i = 0
+            sumCost = 0
+            while ((i + 1) < len(path)):
+                idEdge = Edge.genId(Node(path[i]), Node(path[i + 1]))
+                edge = self.edgeDict.get(idEdge)
+                sumCost = sumCost + edge.weight
+                i = i + 1
+            return sumCost
+        return None
+
+
 
 
 class Node:
