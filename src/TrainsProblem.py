@@ -1,4 +1,5 @@
 from Graph import *
+import math
 
 
 def main():
@@ -74,51 +75,97 @@ def main():
 	#6. The number of trips starting at C and ending at C with a maximum of 3 stops.  
 	#In the sample data below, there are two such trips: C-D-C (2 #stops). and C-E-B-C (3 stops).
 	originNode = graph.nodeDict['C']
-	goalNodeDict = {}
+	pathList2Stops = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 2)
+	pathList3Stops = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 3)
 	sumPath = 0
-	for nodeId in graph.nodeDict:
-		if nodeId != 'C':	
-			goalNodeDict[nodeId] = graph.nodeDict[nodeId]
-
-	for goalNodeKey in goalNodeDict:
-		goalNode = goalNodeDict[goalNodeKey]
-		pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode, 2)
-		for path in pathList:
-			nodeId = path[-1]
-			#print path
-			newOriginNode = graph.nodeDict[nodeId]
-			newGoalNode = graph.nodeDict['C']
-			newPathList = BreadthFirstSearch.findAllPath(graph, newOriginNode, newGoalNode, 1)
-			
-			for p in newPathList:
-				if p[-1] == 'C':
-					sumPath = sumPath + 1
-	print '6. The number of trips starting at C and ending at C with a maximum of 3 stops:', sumPath
+	for path in pathList2Stops:
+		if path[-1] == 'C':
+			sumPath = sumPath + 1
+	for path in pathList3Stops:
+		if path[-1] == 'C':
+			sumPath = sumPath + 1	
+	print '6. The number of trips starting at C and ending at C with a max 3 stops:', sumPath
 
 	#7. The number of trips starting at A and ending at C with exactly 4 stops.  
 	#In the sample data below, there are three such trips: A to C (via #B,C,D); A to C (via D,C,D); and A to C (via D,E,B).
 	originNode = graph.nodeDict['A']
-	goalNodeDict = {}
+	pathList4Stops = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 4)
 	sumPath = 0
-	for nodeId in graph.nodeDict:
-		if nodeId != 'A':	
-			goalNodeDict[nodeId] = graph.nodeDict[nodeId]
-	for goalNodeKey in goalNodeDict:
-		goalNode = goalNodeDict[goalNodeKey]
-		pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode, 3)
-		for path in pathList:
-			if len(path) == 4 or len(path) == 3:
-				nodeId = path[-1]
-				#print path
-				newOriginNode = graph.nodeDict[nodeId]
-				newGoalNode = graph.nodeDict['C']
-				newPathList = BreadthFirstSearch.findAllPath(graph, newOriginNode, newGoalNode, 5 - len(path))
-				
-				for p in newPathList:
-					if p[-1] == 'C' and (len(path) + len(p) == 6):
-						sumPath = sumPath + 1
-						#print path, p
+	for path in pathList4Stops:
+		if path[-1] == 'C':
+			sumPath = sumPath + 1
 	print '7. The number of trips starting at A and ending at C with exactly 4 stops:', sumPath
+
+	#8. The length of the shortest route (in terms of distance to travel) from A to C.
+	originNode = graph.nodeDict['A']
+	goalNode = graph.nodeDict['C']
+	pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+	found = False
+	shortestLength = None
+	shortestPath = None
+	for path in pathList:		
+		lengthRoute = graph.getPathCost(path)
+		if shortestLength is None:
+			shortestLength = lengthRoute
+			shortestPath = path
+		elif lengthRoute < shortestLength:
+			shortestLength = lengthRoute
+			shortestPath = path
+		found = True
+		
+	if not found:
+		print '8. The length of the shortest route (in terms of distance to travel) from A to C.', 'NO SUCH ROUTE'
+	else:
+		print '8. The length of the shortest route (in terms of distance to travel) from A to C.', shortestLength, shortestPath
+
+	#9. The length of the shortest route (in terms of distance to travel) from B to B.
+	originNode = graph.nodeDict['B']
+	i =  1
+	shortestLength = None
+	shortestPath = None
+	while i <= len(graph.nodeDict):
+		pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, i)
+		i = i + 1
+		for path in pathList:		
+			if path[-1] != 'B':
+				continue
+			lengthRoute = graph.getPathCost(path)
+			if shortestLength is None:
+				shortestLength = lengthRoute
+				shortestPath = path
+			elif lengthRoute < shortestLength:
+				shortestLength = lengthRoute
+				shortestPath = path
+			found = True
+	
+	if not found:
+		print '9. The length of the shortest route (in terms of distance to travel) from B to B.', 'NO SUCH ROUTE'
+	else:
+		print '9. The length of the shortest route (in terms of distance to travel) from B to B.', shortestLength, shortestPath
+
+	#10.The number of different routes from C to C with a distance of less than 30.  In the sample data, the trips are: CDC, CEBC, CEBCDC, CDCEBC, #CDEBC, CEBCEBC, CEBCEBCEBC.
+	originNode = graph.nodeDict['C']
+	i =  1
+	numberDiffRoute = 0	
+	finished = False
+	while True:
+		if finished:
+			break
+		pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, i)
+		i = i + 1
+		if len(pathList) == 0:
+			break
+		finished = True
+		for path in pathList:	
+			cost = graph.getPathCost(path)			
+			if (path[-1] == 'C') and  cost < 30:				
+				numberDiffRoute = numberDiffRoute + 1
+			if cost < 30:
+				finished = False
+			
+	
+	print '10.The number of different routes from C to C with a distance of less than 30.', numberDiffRoute 
+
 
 
 

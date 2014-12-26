@@ -154,6 +154,85 @@ class TestCaseApp(unittest.TestCase):
         
         pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
         self.assertEquals(6, len(pathList))
+
+    def testBreadthFirstSearchFindAllPathsIlegalArguments(self):
+        text = 'AB1;AC1;CD1;BD1;CF1;BA1;FC1;BF1;DF1'
+
+        graph = GraphSupport.buildGraph(text)
+        originNode = None
+        goalNode = graph.nodeDict['F']
+        
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        self.assertEqual([], pathList)
+
+        originNode = graph.nodeDict['F']
+        goalNode = None
+        
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        self.assertEqual([], pathList)
+
+        originNode = graph.nodeDict['A']
+        originNode.id = None
+        goalNode = graph.nodeDict['F']
+        
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        self.assertEqual([], pathList)
+
+        originNode = graph.nodeDict['A']        
+        goalNode = graph.nodeDict['F']
+        goalNode.id = None
+
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        self.assertEqual([], pathList)
+
+        originNode = graph.nodeDict['A']        
+        goalNode = graph.nodeDict['A']
+
+        pathList = BreadthFirstSearch.findAllPath(graph, originNode, goalNode)
+        self.assertEqual([], pathList)
+
+    def testFindAllPathWithNoGoal(self):
+        text = 'AB1;AC1;CD1;BD1;CF1;BA1;FC1;BF1;DF1'
+
+        graph = GraphSupport.buildGraph(text)
+        originNode = graph.nodeDict['A']
+
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 1)
+        self.assertTrue(['A', 'C'] in pathList) 
+        self.assertTrue(['A', 'B'] in pathList) 
+        self.assertEqual(2, len(pathList))
+
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode)
+        self.assertTrue(['A', 'C'] in pathList) 
+        self.assertTrue(['A', 'B'] in pathList) 
+        self.assertEqual(2, len(pathList))
+
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 2)
+        self.assertTrue(['A', 'C', 'D'] in pathList) 
+        self.assertTrue(['A', 'C', 'F'] in pathList) 
+        self.assertTrue(['A', 'B', 'D'] in pathList) 
+        self.assertTrue(['A', 'B', 'A'] in pathList) 
+        self.assertTrue(['A', 'B', 'F'] in pathList) 
+        self.assertEqual(5, len(pathList))
+
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 20)
+        for p in pathList:
+            self.assertEqual(21, len(p))
+    
+    def testFindAllPathWithNoGoalIlegalArguments(self):
+        text = 'AB1;AC1;CD1;BD1;CF1;BA1;FC1;BF1;DF1'
+
+        graph = GraphSupport.buildGraph(text)
+        originNode = None
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 1)
+        self.assertEqual([], pathList)
+
+        originNode = graph.nodeDict['A']
+        originNode.id = None
+        pathList = BreadthFirstSearch.findAllPathWithNoGoal(graph, originNode, 1)
+        self.assertEqual([], pathList)
+        
+
         
 
 

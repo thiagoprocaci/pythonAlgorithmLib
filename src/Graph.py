@@ -137,10 +137,45 @@ class BreadthFirstSearch:
     def __init__(self):
         pass
 
+    @staticmethod
+    def findAllPathWithNoGoal(graph, originNode, searchMaxLevel = 1):
+        if (originNode is None) or (originNode.id is None):
+            return []
+        visitedList = []
+        visitedList.append(originNode.id)
+        nodeReturnList = []        
+        BreadthFirstSearch.__findAllPathWithNoGoal(graph, visitedList, nodeReturnList, searchMaxLevel, 0)        
+        return nodeReturnList
+
+    @staticmethod
+    def __findAllPathWithNoGoal(graph, visitedList, nodeReturnList, searchMaxLevel, currentLevel):
+        if (searchMaxLevel == currentLevel):
+            l = []
+            for idNode in visitedList:
+                l.append(idNode)
+            nodeReturnList.append(l) 
+            return
+
+        nodeDict = graph.getAdjacentNodes(graph.nodeDict[visitedList[-1]])
+
+        for nodeKey in nodeDict:            
+            visitedList.append(nodeKey)
+            currentLevel = currentLevel + 1
+            BreadthFirstSearch.__findAllPathWithNoGoal(graph, visitedList, nodeReturnList, searchMaxLevel, currentLevel)
+            currentLevel = currentLevel - 1
+            visitedList.pop()
+
+
+
     # returns all path between two nodes
-    # accept cycles
+    # accept cycles in graph,however, paths returned admits no cicle
+    # origin node must be different from goal node
     @staticmethod
     def findAllPath(graph, originNode, goalNode, searchMaxLevel = None):
+        if (goalNode is None) or (goalNode.id is None) or (originNode is None) or (originNode.id is None) or (goalNode.id == originNode.id):
+            return []
+        if searchMaxLevel <= 0:
+            searchMaxLevel = None
         visitedList = []
         visitedList.append(originNode.id)
         nodeReturnList = []        
