@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 class Session:
     name, minutes = None, None
@@ -23,10 +24,16 @@ class Track:
             sumMin = sumMin + session.minutes
         return self.minutes - sumMin
 
-    def printSessions(self):        
-        print self.name, self.minutes
+    def printSessions(self):  
+        date = datetime.now()
+        if self.morning:           
+            newDate = date.replace(hour=9, minute=0, second=0)
+        else:
+            newDate = date.replace(hour=13, minute=0, second=0)
+        print self.name
         for session in self.sessionList:
-            print session.name, session.minutes            
+            print format(newDate, '%H:%M'), session.name, session.minutes, 'min' 
+            newDate =newDate + timedelta(minutes=session.minutes)          
 
         print '-----------------------------------'
 
@@ -59,10 +66,10 @@ def main():
 
     sessionList.sort(key = lambda x: x.minutes, reverse = False)
 
-    track1Morning = Track('track 1 morning', 60 * 3, True)
-    track1Afternoon = Track('track 1 afternoon', 60 * 4, False)
-    track2Morning = Track('track 2 morning', 60 * 3, True)
-    track2Afternoon = Track('track 2 afternoon', 60 * 4, False)
+    track1Morning = Track('Track 1 morning', 60 * 3, True)
+    track1Afternoon = Track('Track 1 afternoon', 60 * 4, False)
+    track2Morning = Track('Track 2 morning', 60 * 3, True)
+    track2Afternoon = Track('Track 2 afternoon', 60 * 4, False)
     
     #Best-fit algorithm
     while sessionList:
