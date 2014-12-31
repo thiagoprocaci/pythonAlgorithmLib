@@ -149,6 +149,7 @@ class BreadthFirstSearch:
 
     @staticmethod
     def __findAllPathWithNoGoal(graph, visitedList, nodeReturnList, searchMaxLevel, currentLevel):
+        #pq nao listar todos os caminhos com level < searchMaxLevel
         if (searchMaxLevel == currentLevel):
             l = []
             for idNode in visitedList:
