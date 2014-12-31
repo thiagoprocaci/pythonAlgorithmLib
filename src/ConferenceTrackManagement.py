@@ -60,9 +60,9 @@ def main():
     sessionList.sort(key = lambda x: x.minutes, reverse = False)
 
     track1Morning = Track('track 1 morning', 60 * 3, True)
-    track1Afternoon = Track('track 1 afternoon', 60 * 5, False)
+    track1Afternoon = Track('track 1 afternoon', 60 * 4, False)
     track2Morning = Track('track 2 morning', 60 * 3, True)
-    track2Afternoon = Track('track 2 afternoon', 60 * 5, False)
+    track2Afternoon = Track('track 2 afternoon', 60 * 4, False)
     
     #Best-fit algorithm
     while sessionList:
@@ -73,22 +73,54 @@ def main():
         track2MorningRM = track2Morning.remainingMinutes() - session.minutes
         track2AfternoonRM = track2Afternoon.remainingMinutes() - session.minutes
 
-        #print track1MorningRM
+        avaliableTrackDict = {}
 
-        if (track1AfternoonRM >= 0) and (track1AfternoonRM >= track1MorningRM) and (track1AfternoonRM >= track2MorningRM) and (track1AfternoonRM >= track2AfternoonRM):            
+        if track1MorningRM < 0:
+            track1MorningRM = None
+        else:
+            avaliableTrackDict[track1Morning.name] = track1MorningRM
+
+        if track1AfternoonRM < 0:
+            track1AfternoonRM = None
+        else:
+            avaliableTrackDict[track1Afternoon.name] = track1AfternoonRM
+
+        if track2MorningRM < 0:
+            track2MorningRM = None
+        else:
+            avaliableTrackDict[track2Morning.name] = track2MorningRM
+
+        if track2AfternoonRM < 0:
+            track2AfternoonRM = None
+        else:
+            avaliableTrackDict[track2Afternoon.name] = track2AfternoonRM
+
+        
+        smallestGap = None
+        selectTrackName = None
+        for key in avaliableTrackDict:
+            remainingMin = avaliableTrackDict[key]
+            if (smallestGap is None) or (smallestGap > remainingMin):
+                smallestGap = remainingMin
+                selectTrackName = key
+
+        if selectTrackName == track1Morning.name:
+            track1Morning.sessionList.append(session)
+            continue
+
+        if selectTrackName == track1Afternoon.name:
             track1Afternoon.sessionList.append(session)
             continue
-        if (track2AfternoonRM >= 0) and (track2AfternoonRM >= track1AfternoonRM) and (track2AfternoonRM >= track1MorningRM) and (track2AfternoonRM >= track2MorningRM):            
+
+        if selectTrackName == track2Morning.name:
+            track2Morning.sessionList.append(session)
+            continue
+
+        if selectTrackName == track2Afternoon.name:
             track2Afternoon.sessionList.append(session)
             continue
 
-        if (track1MorningRM >= 0) and (track1MorningRM >= track1AfternoonRM) and (track1MorningRM >= track2MorningRM) and (track1MorningRM >= track2AfternoonRM):            
-            track1Morning.sessionList.append(session)
-            continue
-        
-        if (track2MorningRM >= 0) and (track2MorningRM >= track1AfternoonRM) and (track2MorningRM >= track1MorningRM) and (track2MorningRM >= track2AfternoonRM):            
-            track2Morning.sessionList.append(session)
-            continue
+
 
         print 'Problem!'
         
